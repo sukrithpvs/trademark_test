@@ -407,23 +407,30 @@ class DatabaseTrademarkAnalyzer:
                 pass
 
     def _parse_cache_entry(self, cache_entry):
-        """Parse existing cache entry format"""
+        """Parse existing cache entry format - EXACT COPY from old code"""
         import re
+        
         if not cache_entry:
             return "", ""
         
+        # Parse the format: "{comparison_text}, display_text"
         match = re.match(r'\{([^}]*)\},\s*(.*)', cache_entry)
         if match:
             comparison_text = match.group(1).strip()
             display_text = match.group(2).strip()
             return comparison_text, display_text
         else:
+            # Fallback for any entries not in the expected format
             return cache_entry, cache_entry
 
     def _get_comparison_text(self, comparison_text, display_text):
-        """Apply special comparison rules"""
+        """Apply special comparison rules - EXACT COPY from old code"""
+        # Rule: If comparison text (in brackets) is empty and display text exists,
+        # use display text for comparison in those cases only
         if not comparison_text.strip() and display_text.strip():
             return display_text
+    
+    # Otherwise, use the comparison text (from brackets)
         return comparison_text if comparison_text.strip() else display_text
 
     def _get_risk_level(self, score: float) -> str:
@@ -438,63 +445,92 @@ class DatabaseTrademarkAnalyzer:
             return "No Risk"
 
     def analyze_device_marks(self, client_marks, journal_marks):
-        """Analyze device marks using original logic"""
+        """Analyze device marks using EXACT logic from working old code"""
         results = []
         
         if not client_marks or not journal_marks:
             return results
 
-        # Prepare folders and extract text (from old code)
+        print("🚀 Starting device mark analysis with correct logic...")
+        
+        # STEP 1: Collect all image paths like in old code
         all_image_paths = []
         for mark in client_marks:
             if mark.get('image_path') and os.path.exists(mark['image_path']):
                 all_image_paths.append(mark['image_path'])
-        
         for mark in journal_marks:
             if mark.get('image_path') and os.path.exists(mark['image_path']):
                 all_image_paths.append(mark['image_path'])
 
-        if all_image_paths:
-            unique_dirs = list(set([os.path.dirname(path) for path in all_image_paths]))
-            self.visual_analyzer.prepare_folders(unique_dirs)
-            self.text_extractor.extract_text_from_folders(unique_dirs)
+        if not all_image_paths:
+            print("❌ No valid image paths found")
+            return results
+
+        # STEP 2: Prepare folders - CRITICAL MISSING STEP
+        print("📁 Preparing image features...")
+        unique_dirs = list(set([os.path.dirname(path) for path in all_image_paths]))
+        self.visual_analyzer.prepare_folders(unique_dirs)
+        
+        # STEP 3: Extract text from folders - CRITICAL MISSING STEP  
+        print("📝 Extracting text from images...")
+        self.text_extractor.extract_text_from_folders(unique_dirs)
 
         processed = 0
         total_pairs = len(client_marks) * len(journal_marks)
+        
+        print(f"🔍 Processing {total_pairs:,} comparisons...")
 
         for client_mark in client_marks:
             for journal_mark in journal_marks:
                 try:
                     client_img_path = client_mark.get('image_path')
                     journal_img_path = journal_mark.get('image_path')
-                    
+
                     if not client_img_path or not journal_img_path:
                         continue
                     if not os.path.exists(client_img_path) or not os.path.exists(journal_img_path):
                         continue
 
-                    # RESTORED: Original visual similarity calculation
-                    visual_result = self.visual_analyzer.calculate_visual_similarity(client_img_path, journal_img_path)
-                    visual_score, visual_details = visual_result
+                    # STEP 4: Calculate visual similarity with tuple handling
+                    visual_result = self.visual_analyzer.calculate_visual_similarity(
+                        client_img_path, journal_img_path
+                    )
+                    
+                    # Handle tuple return - CRITICAL FIX
+                    if isinstance(visual_result, tuple):
+                        visual_score, visual_details = visual_result
+                    else:
+                        visual_score = visual_result
+                        visual_details = "No details available"
 
-                    # RESTORED: Original text extraction and parsing
+                    # STEP 5: Extract and parse text using old method
                     img1_text = self.text_extractor.extract_text_from_image(client_img_path)
                     img2_text = self.text_extractor.extract_text_from_image(journal_img_path)
-                    
+
+                    # Parse cache entries
                     img1_comparison, img1_display = self._parse_cache_entry(img1_text)
                     img2_comparison, img2_display = self._parse_cache_entry(img2_text)
-                    
+
+                    # Apply comparison rules
                     text1_for_comparison = self._get_comparison_text(img1_comparison, img1_display)
                     text2_for_comparison = self._get_comparison_text(img2_comparison, img2_display)
 
-                    # RESTORED: Original text similarity calculation
-                    text_result = self.text_analyzer.calculate_text_similarity(text1_for_comparison, text2_for_comparison)
-                    text_score, text_details = text_result
-
-                    # RESTORED: Original final score calculation (50% visual + 50% text)
-                    final_score = 0.5 * visual_score + 0.5 * text_score
+                    # STEP 6: Calculate text similarity with tuple handling
+                    text_result = self.text_analyzer.calculate_text_similarity(
+                        text1_for_comparison, text2_for_comparison
+                    )
                     
-                    # Convert to percentage
+                    # Handle tuple return - CRITICAL FIX
+                    if isinstance(text_result, tuple):
+                        text_score, text_details = text_result
+                    else:
+                        text_score = text_result
+                        text_details = "No details available"
+
+                    # STEP 7: Calculate final score (50% visual + 50% text)
+                    final_score = 0.5 * visual_score + 0.5 * text_score
+
+                    # STEP 8: Convert to percentages - CRITICAL FIX
                     visual_score_pct = visual_score * 100
                     text_score_pct = text_score * 100
                     final_score_pct = final_score * 100
@@ -507,9 +543,9 @@ class DatabaseTrademarkAnalyzer:
                         'journal_mark': journal_mark,
                         'risk_level': risk_level,
                         'comparison_type': 'device_mark',
-                        'visual_score': visual_score_pct,
-                        'text_score': text_score_pct,
-                        'final_score': final_score_pct,
+                        'visual_score': visual_score_pct,  # Now in percentage
+                        'text_score': text_score_pct,     # Now in percentage
+                        'final_score': final_score_pct,   # Now in percentage
                         'visual_details': visual_details,
                         'text_details': text_details,
                         'client_text_display': img1_display,
@@ -518,26 +554,36 @@ class DatabaseTrademarkAnalyzer:
                         'text2': text2_for_comparison,
                         'infringement_detected': final_score >= 0.5
                     }
-                    
+
                     results.append(result)
                     processed += 1
 
-                    # Progress updates
+                    # Progress updates every 10 comparisons
                     if processed % 10 == 0:
                         progress = (processed / total_pairs) * 60 + 20
-                        self.emit_progress(f"Processing device marks: {processed}/{total_pairs}", progress, processed_comparisons=processed)
+                        self.emit_progress(
+                            f"Processing device marks: {processed}/{total_pairs}", 
+                            progress, 
+                            processed_comparisons=processed
+                        )
 
                 except Exception as e:
+                    print(f"⚠️ Error processing comparison: {e}")
                     continue
 
+        print(f"✅ Device mark analysis complete! Processed {len(results)} results")
         return results
 
+
     def analyze_word_marks(self, client_marks, journal_marks):
-        """Analyze word marks using original logic"""
+        """Analyze word marks using EXACT logic from working old code"""
         results = []
         
         if not client_marks or not journal_marks:
             return results
+
+        print(f"📝 Starting word mark analysis...")
+        print(f"🔍 Comparing {len(client_marks)} client vs {len(journal_marks)} journal word marks")
 
         processed = 0
         total_pairs = len(client_marks) * len(journal_marks)
@@ -545,23 +591,31 @@ class DatabaseTrademarkAnalyzer:
         for client_mark in client_marks:
             for journal_mark in journal_marks:
                 try:
-                    # RESTORED: Original field mapping
+                    # Get text from correct fields
                     client_text = client_mark.get('tm_applied_for', '')
                     journal_text = journal_mark.get('word_mark', '')
 
                     if not client_text or not journal_text:
                         continue
 
-                    # RESTORED: Use original text analyzer instead of difflib
-                    text_result = self.text_analyzer.calculate_text_similarity(client_text, journal_text)
-                    text_score, text_details = text_result
+                    # Calculate text similarity with tuple handling
+                    text_result = self.text_analyzer.calculate_text_similarity(
+                        client_text, journal_text
+                    )
                     
-                    # Convert to percentage
+                    # Handle tuple return - CRITICAL FIX
+                    if isinstance(text_result, tuple):
+                        text_score, text_details = text_result
+                    else:
+                        text_score = text_result
+                        text_details = "No details available"
+
+                    # Convert to percentage - CRITICAL FIX
                     text_score_pct = text_score * 100
-                    
+
                     risk_level = self._get_risk_level(text_score_pct)
 
-                    # RESTORED: Original filtering (only keep results > 0.1)
+                    # Only keep meaningful results (threshold from old code)
                     if text_score > 0.1:
                         result = {
                             'id': str(uuid.uuid4()),
@@ -569,9 +623,9 @@ class DatabaseTrademarkAnalyzer:
                             'journal_mark': journal_mark,
                             'risk_level': risk_level,
                             'comparison_type': 'word_mark',
-                            'text_score': text_score_pct,
-                            'final_score': text_score_pct,  # For word marks, final score = text score
-                            'visual_score': 0,  # No visual score for word marks
+                            'text_score': text_score_pct,    # Now in percentage
+                            'final_score': text_score_pct,   # For word marks, final = text
+                            'visual_score': 0,               # No visual for word marks
                             'text_details': text_details,
                             'visual_details': "Word mark comparison",
                             'client_text_display': client_text,
@@ -580,34 +634,43 @@ class DatabaseTrademarkAnalyzer:
                             'text2': journal_text,
                             'infringement_detected': text_score_pct >= 50
                         }
-                        
                         results.append(result)
 
                     processed += 1
 
-                    # Progress updates
-                    if processed % 20 == 0:
+                    # Progress updates every 100 comparisons
+                    if processed % 100 == 0:
                         progress = (processed / total_pairs) * 30 + 70
-                        self.emit_progress(f"Processing word marks: {processed}/{total_pairs}", progress, processed_comparisons=processed)
+                        self.emit_progress(
+                            f"Processing word marks: {processed}/{total_pairs}", 
+                            progress, 
+                            processed_comparisons=processed
+                        )
 
                 except Exception as e:
+                    print(f"⚠️ Error processing word comparison: {e}")
                     continue
 
+        print(f"✅ Word mark analysis complete! Generated {len(results)} meaningful results")
         return results
 
+
     def get_client_device_marks(self, limit: int = 20):
-        """Get client device marks from database with correct field mapping"""
+        """Get client device marks - Fixed version"""
         try:
-            if not os.path.exists('client_test_devicemark.db'):
+            # Use correct database name from old code
+            db_path = 'client_test_devicemark.db'  # Note: test_ prefix
+            if not os.path.exists(db_path):
+                print(f"❌ Database not found: {db_path}")
                 return []
 
-            conn = sqlite3.connect('client_test_devicemark.db')
+            conn = sqlite3.connect(db_path)
             cursor = conn.cursor()
             
             cursor.execute('''
             SELECT API_appno, API_dateOfApp, API_class, API_status, API_tmAppliedFor,
-                   API_userDetail, API_validUpto, API_propName, API_buisnessName,
-                   API_imagepath, API_goodsAndSerice
+                API_userDetail, API_validUpto, API_propName, API_buisnessName,
+                API_imagepath, API_goodsAndSerice
             FROM trademark_data
             WHERE API_imagepath IS NOT NULL AND API_imagepath != ''
             ORDER BY API_appno DESC
@@ -619,23 +682,28 @@ class DatabaseTrademarkAnalyzer:
 
             device_marks = []
             for row in results:
-                device_marks.append({
-                    'app_no': row[0],
-                    'date_of_app': row[1],
-                    'class': row[2],
-                    'status': row[3],
-                    'tm_applied_for': row[4],
-                    'user_detail': row[5],
-                    'valid_upto': row[6],
-                    'prop_name': row[7],
-                    'business_name': row[8],
-                    'image_path': row[9],  # This is the key field
-                    'goods_services': row[10]
-                })
+                # Verify image path exists
+                if row[9] and os.path.exists(row[9]):
+                    device_marks.append({
+                        'app_no': row[0],
+                        'date_of_app': row[1],
+                        'class': row[2],
+                        'status': row[3],
+                        'tm_applied_for': row[4],
+                        'user_detail': row[5],
+                        'valid_upto': row[6],
+                        'prop_name': row[7],
+                        'business_name': row[8],
+                        'image_path': row[9],
+                        'goods_services': row[10]
+                    })
 
+            print(f"📱 Loaded {len(device_marks)} client device marks")
             return device_marks
         except Exception as e:
-            return []
+            print(f"Error getting client device marks: {str(e)}")
+        return []
+
 
     def get_client_word_marks(self, limit: int = 20):
         """Get client word marks from database with correct field mapping"""
