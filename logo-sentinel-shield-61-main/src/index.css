@@ -1,0 +1,469 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Google Fonts - Elegant, minimalist fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Definition of the design system - Pure black and white theme */
+
+@layer base {
+  :root {
+    --background: 255 255 255;
+    --foreground: 0 0 0;
+
+    --card: 255 255 255;
+    --card-foreground: 0 0 0;
+
+    --popover: 255 255 255;
+    --popover-foreground: 0 0 0;
+
+    --primary: 0 0 0;
+    --primary-foreground: 255 255 255;
+
+    --secondary: 248 248 248;
+    --secondary-foreground: 0 0 0;
+
+    --muted: 252 252 252;
+    --muted-foreground: 115 115 115;
+
+    --accent: 245 245 245;
+    --accent-foreground: 0 0 0;
+
+    --destructive: 239 68 68;
+    --destructive-foreground: 255 255 255;
+
+    --border: 229 229 229;
+    --input: 255 255 255;
+    --ring: 0 0 0;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 255 255 255;
+    --sidebar-foreground: 0 0 0;
+    --sidebar-primary: 0 0 0;
+    --sidebar-primary-foreground: 255 255 255;
+    --sidebar-accent: 245 245 245;
+    --sidebar-accent-foreground: 0 0 0;
+    --sidebar-border: 229 229 229;
+    --sidebar-ring: 0 0 0;
+  }
+
+  .dark {
+    --background: 0 0 0;
+    --foreground: 255 255 255;
+
+    --card: 0 0 0;
+    --card-foreground: 255 255 255;
+
+    --popover: 0 0 0;
+    --popover-foreground: 255 255 255;
+
+    --primary: 255 255 255;
+    --primary-foreground: 0 0 0;
+
+    --secondary: 10 10 10;
+    --secondary-foreground: 255 255 255;
+
+    --muted: 15 15 15;
+    --muted-foreground: 161 161 161;
+
+    --accent: 20 20 20;
+    --accent-foreground: 255 255 255;
+
+    --destructive: 239 68 68;
+    --destructive-foreground: 255 255 255;
+
+    --border: 55 55 55;
+    --input: 0 0 0;
+    --ring: 255 255 255;
+
+    --sidebar-background: 0 0 0;
+    --sidebar-foreground: 255 255 255;
+    --sidebar-primary: 255 255 255;
+    --sidebar-primary-foreground: 0 0 0;
+    --sidebar-accent: 20 20 20;
+    --sidebar-accent-foreground: 255 255 255;
+    --sidebar-border: 55 55 55;
+    --sidebar-ring: 255 255 255;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
+    font-variation-settings: 'opsz' 32;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+    overflow-x: hidden;
+  }
+
+  /* Elegant Typography */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  /* Brand Typography - Elegant and minimalist */
+  .brand-font {
+    font-family: 'Playfair Display', 'Poppins', serif;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+  }
+
+  /* Poppins font class */
+  .font-poppins {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  /* Custom selection colors - pure contrast */
+  ::selection {
+    @apply bg-black text-white;
+  }
+
+  .dark ::selection {
+    @apply bg-white text-black;
+  }
+
+  /* Refined text colors */
+  .text-muted-foreground {
+    @apply text-gray-600 dark:text-gray-400;
+  }
+
+  /* Table header fixes for visibility */
+  .table-header-light {
+    @apply text-black font-semibold;
+  }
+
+  .dark .table-header-light {
+    @apply text-white font-semibold;
+  }
+
+  /* COMPLETELY REMOVE ALL YELLOW COLORS - Replace with gray */
+  .bg-yellow-50, .bg-yellow-100, .bg-yellow-200, .bg-yellow-300,
+  .bg-yellow-400, .bg-yellow-500, .bg-yellow-600, .bg-yellow-700,
+  .bg-yellow-800, .bg-yellow-900 {
+    @apply bg-gray-50 dark:bg-gray-900 !important;
+  }
+
+  .text-yellow-800, .text-yellow-700, .text-yellow-600, .text-yellow-500,
+  .text-yellow-400, .text-yellow-300, .text-yellow-200, .text-yellow-100 {
+    @apply text-gray-800 dark:text-gray-200 !important;
+  }
+
+  .border-yellow-200, .border-yellow-300, .border-yellow-400,
+  .border-yellow-500, .border-yellow-600 {
+    @apply border-gray-200 dark:border-gray-700 !important;
+  }
+
+  /* ULTRA AGGRESSIVE YELLOW REMOVAL - Target all possible yellow variations */
+  
+  /* Target inline styles with yellow colors */
+  [style*="background-color: yellow"], 
+  [style*="background-color: #fffed5"],
+  [style*="background-color: #FFFED5"],
+  [style*="background-color: rgb(255, 254, 213)"],
+  [style*="background-color: rgba(255, 254, 213"],
+  [style*="background: yellow"],
+  [style*="background: #fffed5"],
+  [style*="background: #FFFED5"],
+  [style*="background: rgb(255, 254, 213)"],
+  [style*="background: rgba(255, 254, 213"],
+  [class*="yellow"],
+  [class*="bg-yellow"] {
+    background-color: rgb(249 250 251) !important; /* gray-50 */
+    color: rgb(31 41 55) !important; /* gray-800 */
+  }
+
+  .dark [style*="background-color: yellow"], 
+  .dark [style*="background-color: #fffed5"],
+  .dark [style*="background-color: #FFFED5"],
+  .dark [style*="background-color: rgb(255, 254, 213)"],
+  .dark [style*="background-color: rgba(255, 254, 213"],
+  .dark [style*="background: yellow"],
+  .dark [style*="background: #fffed5"],
+  .dark [style*="background: #FFFED5"],
+  .dark [style*="background: rgb(255, 254, 213)"],
+  .dark [style*="background: rgba(255, 254, 213"],
+  .dark [class*="yellow"],
+  .dark [class*="bg-yellow"] {
+    background-color: rgb(17 24 39) !important; /* gray-900 */
+    color: rgb(229 231 235) !important; /* gray-200 */
+  }
+
+  /* Override any yellow text or backgrounds anywhere with universal selector */
+  * {
+    &[class*="yellow"] {
+      @apply bg-gray-50 text-gray-800 border-gray-200 dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700 !important;
+    }
+  }
+
+  /* Global override for any element that might have yellow background */
+  *[style*="#fffed5"],
+  *[style*="#FFFED5"],
+  *[style*="rgb(255, 254, 213)"],
+  *[style*="rgba(255, 254, 213"],
+  *[style*="hsl(60, 100%, 92%)"] {
+    background-color: rgb(249 250 251) !important;
+    color: rgb(31 41 55) !important;
+    border-color: rgb(229 229 229) !important;
+  }
+
+  .dark *[style*="#fffed5"],
+  .dark *[style*="#FFFED5"],
+  .dark *[style*="rgb(255, 254, 213)"],
+  .dark *[style*="rgba(255, 254, 213"],
+  .dark *[style*="hsl(60, 100%, 92%)"] {
+    background-color: rgb(17 24 39) !important;
+    color: rgb(229 231 235) !important;
+    border-color: rgb(55 55 55) !important;
+  }
+
+  /* Target buttons that might have yellow colors */
+  button[style*="#fffed5"],
+  button[style*="yellow"],
+  button[class*="yellow"],
+  .btn-yellow,
+  .button-yellow {
+    background-color: rgb(249 250 251) !important;
+    color: rgb(31 41 55) !important;
+    border-color: rgb(229 229 229) !important;
+  }
+
+  .dark button[style*="#fffed5"],
+  .dark button[style*="yellow"],
+  .dark button[class*="yellow"],
+  .dark .btn-yellow,
+  .dark .button-yellow {
+    background-color: rgb(17 24 39) !important;
+    color: rgb(229 231 235) !important;
+    border-color: rgb(55 55 55) !important;
+  }
+
+  /* Elegant buttons */
+  button {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  /* Modern glassmorphism effect */
+  .backdrop-blur-xl {
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  /* Refined borders */
+  .border-subtle {
+    @apply border-gray-200 dark:border-gray-800;
+  }
+
+  /* Input and form styling fixes */
+  input, select, textarea {
+    @apply bg-white dark:bg-black border-gray-300 dark:border-gray-700 text-black dark:text-white;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    @apply ring-2 ring-black dark:ring-white ring-offset-2 ring-offset-white dark:ring-offset-black;
+  }
+
+  /* Main content area - prevent horizontal overflow */
+  main {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  /* Dashboard content wrapper */
+  .dashboard-content {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Force any remaining yellow elements to match theme - including SVGs */
+  .lucide-react *[fill="#fffed5"],
+  .lucide-react *[style*="#fffed5"],
+  svg *[fill="#fffed5"],
+  svg *[style*="#fffed5"],
+  svg *[fill="yellow"],
+  svg *[style*="yellow"] {
+    fill: rgb(31 41 55) !important;
+  }
+
+  .dark .lucide-react *[fill="#fffed5"],
+  .dark .lucide-react *[style*="#fffed5"],
+  .dark svg *[fill="#fffed5"],
+  .dark svg *[style*="#fffed5"],
+  .dark svg *[fill="yellow"],
+  .dark svg *[style*="yellow"] {
+    fill: rgb(229 231 235) !important;
+  }
+
+  /* Ultimate override - catch any remaining yellow elements */
+  div, span, p, section, article, aside, header, footer, main, nav {
+    &[style*="#fffed5"],
+    &[style*="yellow"],
+    &[class*="yellow"] {
+      background-color: rgb(249 250 251) !important;
+      color: rgb(31 41 55) !important;
+      border-color: rgb(229 229 229) !important;
+    }
+  }
+
+  .dark div, .dark span, .dark p, .dark section, .dark article, .dark aside, .dark header, .dark footer, .dark main, .dark nav {
+    &[style*="#fffed5"],
+    &[style*="yellow"],
+    &[class*="yellow"] {
+      background-color: rgb(17 24 39) !important;
+      color: rgb(229 231 235) !important;
+      border-color: rgb(55 55 55) !important;
+    }
+  }
+}
+
+/* Elegant animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.6s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.6s ease-out;
+}
+
+/* Refined hover effects */
+.hover-lift {
+  @apply transition-all duration-300 ease-out hover:translate-y-[-1px];
+}
+
+.hover-scale {
+  @apply transition-transform duration-300 ease-out hover:scale-[1.02];
+}
+
+/* Modern focus states */
+*:focus-visible {
+  @apply outline-none ring-1 ring-black dark:ring-white ring-offset-2 ring-offset-white dark:ring-offset-black;
+}
+
+/* Refined shadows */
+.shadow-elegant {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.dark .shadow-elegant {
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
+}
+
+/* Statistics section styling */
+.stats-card {
+  @apply backdrop-blur-sm bg-white/80 dark:bg-black/80 border border-gray-200 dark:border-gray-800;
+}
+
+/* Enhanced gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #000000 0%, #333333 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dark .gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Modern card styling */
+.modern-card {
+  @apply bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-2xl p-8 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-300;
+}
+
+/* Elegant section dividers */
+.section-divider {
+  @apply border-t border-gray-200 dark:border-gray-800;
+}
+
+/* Clean spacing utilities */
+.section-padding {
+  @apply py-24 px-6 sm:px-8 lg:px-12;
+}
+
+/* Brand specific styling */
+.brand-text {
+  @apply font-poppins font-light tracking-[0.2em] uppercase;
+}
+
+/* Professional button styling */
+.professional-button {
+  @apply px-8 py-3 bg-black dark:bg-white text-white dark:text-black font-medium tracking-wide rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-300;
+}
+
+.professional-button-outline {
+  @apply px-8 py-3 border border-gray-300 dark:border-gray-700 text-black dark:text-white font-medium tracking-wide rounded-full hover:bg-gray-50 dark:hover:bg-gray-950 transition-all duration-300;
+}
+
+/* Fix for empty state backgrounds */
+.empty-state-bg {
+  @apply bg-white dark:bg-black;
+}
+
+/* Consistent table styling */
+.table-container {
+  @apply bg-white dark:bg-black border border-gray-300 dark:border-gray-700;
+}
+
+.table-row-hover {
+  @apply hover:bg-gray-50 dark:hover:bg-gray-900/50;
+}
